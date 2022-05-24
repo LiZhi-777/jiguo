@@ -109,92 +109,8 @@
 	})
 })(jQuery);
 
-/**热门试用 轮播js**/
-var slide = {
-	stop: true,
-	index: 0,
-	len: null,
-	animate: false,
-	prevEvent: function () {
-		var prev = $(".prev");
-		prev.live("mouseover", function () {
-			slide.stop = false;
-		});
-		prev.live("mouseout", function () {
-			slide.stop = true;
-		});
-		var animate1 = false;
-		prev.live("click", function () {
-			if (animate1 || slide.animate) return;
-			animate1 = true;
-			slide.index--;
-			if (slide.index < 0) slide.index = slide.len - 1;
-			$(".slide-box").css("left", "-1000px");
-			$(".slide-box dl").css("left", "1000px");
-			$(".slide-box dl").eq(slide.index).css("left", "0");
-			$(".slide-box").animate({ "left": "0" }, 800, function () {
-				$(".slide-box dl").removeClass("on");
-				$(".slide-box dl").eq(slide.index).addClass("on");
-				animate1 = false;
-			});
-		});
-	},
-	nextEvent: function () {
-		var next = $(".next");
-		next.live("mouseover", function () {
-			slide.stop = false;
-		});
-		next.live("mouseout", function () {
-			slide.stop = true;
-		});
-		var animate1 = false;
-		next.live("click", function () {
-			if (animate1 || slide.animate) return;
-			animate1 = true;
-			slide.index++;
-			if (slide.index >= slide.len) slide.index = 0;
-			$(".slide-box dl").css("left", "0");
-			$(".slide-box dl").eq(slide.index).css("left", "1000px");
-			$(".slide-box").animate({ "left": "-1000px" }, 800, function () {
-				$(".slide-box dl").eq(slide.index).css("left", "0");
-				$(".slide-box dl").removeClass("on");
-				$(".slide-box dl").eq(slide.index).addClass("on");
-				$(".slide-box").css("left", "0");
-				animate1 = false;
-			});
-		});
-	},
-	init: function () {
-		slide.len = $(".slide-box dl").size();
-		$('.slide-box').width(2000);
-		/**自动 轮播**/
-		setInterval(function () {
-			if (!slide.stop) return;
-			slide.animate = true;
-			slide.index++;
-			if (slide.index >= slide.len) slide.index = 0;
-			$(".slide-box dl").css("left", "0");
-			$(".slide-box dl").eq(slide.index).css("left", "1000px");
-			$(".slide-box").animate({ "left": "-1000px" }, 800, function () {
-				$(".slide-box").css("left", "0");
-				$(".slide-box dl").eq(slide.index).css("left", "0");
-				$(".slide-box dl").removeClass("on");
-				$(".slide-box dl").eq(slide.index).addClass("on");
-				slide.animate = false;
-			});
-		}, 3000);
-		/**左右箭头点击**/
-		this.prevEvent();
-		this.nextEvent();
-	}
-}
-
 
 $(function () {
-	/**
-	 * @首页热门试用
-	 */
-	slide.init();
 
 	/**
 	 * @导购清单json
@@ -219,36 +135,6 @@ $(function () {
 			if (indexNum >= allLen) {
 				self.parent().html('<span class="no-more">没有更多啦~</span>');
 				indexNum = 0;
-			} else {
-				self.removeClass("loading").html("点击加载更多");
-			}
-		}, "json");
-	});
-	/**
-	 * @体验报告json
-	 */
-	$("#report-btn").live("click", function () {
-		var self = $(this);
-		var param = '';//加载html变量
-		self.addClass("loading").html("正在加载中");
-		$.post("json/json.js", function (data) {
-			allLen = data.length;//获取json长度
-			var data1 = data[indexNum];
-			var dlen = data1.length;
-			for (var j = 0; j < dlen; j++) {
-				var thisd = data1[j];
-				var img = thisd["img"];
-				var text = thisd["text"];
-				var uName = thisd["uName"];
-				var sTime = thisd["sTime"];
-				param += '<li><a href="../guid/detail.html"><img src="' + img + '" width="700" height="412"/><div class="info"><p class="title">' + text + '</p><div class="btm fix"><div class="userInfo left"><span class="avt"></span><span class="name">' + uName + '</span><span class="time">' + sTime + '</span></div><div class="right icon"><span class="zan">3</span><span class="look">3</span></div></div></div></a></li>';
-			}
-			self.parent().prev().append(param);
-			indexNum++;
-
-			if (indexNum >= allLen) {
-				self.parent().html('<span class="no-more">没有更多啦~</span>');
-				indexNum = 0
 			} else {
 				self.removeClass("loading").html("点击加载更多");
 			}
